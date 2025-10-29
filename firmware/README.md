@@ -4,7 +4,7 @@ The following describes the firmware running on the Rpi Pico that implements PID
 
 ## Zig
 
-The firmware is written in the [Zig](https://ziglang.org/) programming language, and currently tracks version `0.15.1`.
+The firmware is written in the [Zig](https://ziglang.org/) programming language, and currently tracks version `0.15.2`.
 It uses the [MicroZig project](https://microzig.tech/) to provide a HAL and build utilities for the RP2040, a project
 which I also contribute to!
 
