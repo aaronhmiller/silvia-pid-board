@@ -1,7 +1,7 @@
 .{
     .name = .silvia_pid_controller,
     .fingerprint = 0xda367932810e26ae,
-    .version = "0.0.0",
+    .version = "0.0.1",
     .dependencies = .{
         .microzig = .{
             .url = "git+https://github.com/ZigEmbeddedGroup/microzig?ref=HEAD#06ccc5385126ce1ca488644a9833be8fa7e95754",

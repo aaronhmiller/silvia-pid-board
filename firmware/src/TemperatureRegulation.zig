@@ -46,14 +46,14 @@ pub fn stop(self: *TemperatureRegulation) void {
     self.heater_control.immediateOff();
 }
 
-pub fn steamMode(self: *TemperatureRegulation) void {
+pub fn steamMode(self: *TemperatureRegulation, temperature: f32) void {
     self.steam_mode = true;
-    self.setpoint = steam_setpoint;
+    self.setpoint = temperature;
 }
 
-pub fn coffeeMode(self: *TemperatureRegulation) void {
+pub fn coffeeMode(self: *TemperatureRegulation, temperature: f32) void {
     self.steam_mode = false;
-    self.setpoint = coffee_setpoint;
+    self.setpoint = temperature;
 }
 
 fn pidControlLoop(self: *TemperatureRegulation, timestamp_us: u64, current_temperature: f32) void {
