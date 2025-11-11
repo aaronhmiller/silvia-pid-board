@@ -38,8 +38,8 @@ import ntptime
 from machine import UART, Pin, RTC
 
 # ============ CONFIGURATION ============
-WIFI_SSID = "eero353"
-WIFI_PASSWORD = "strongunicorn808"
+WIFI_SSID = "<YOUR_SSID_HERE>"
+WIFI_PASSWORD = "<YOUR_PWD_HERE>"
 WIFI_START_HOUR = 0    # Start hour (24-hour format)
 WIFI_END_HOUR = 24     # End hour (24-hour format)
 BASE_TIMEZONE_OFFSET = -8  # PST base offset (UTC-8)
