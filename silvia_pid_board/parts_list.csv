@@ -3,7 +3,7 @@ C1,22nF 250VAC,1,399-CAN17C223KARACTUCT-ND,Board Component
 "C2,C3,C4",0.1uF,3,311-1140-1-ND,Board Component
 D1,BTA416X-800BTQ,1,1740-BTA416X-800BTQ-ND,Board Component
 D1,Heatsink,1,HS403-ND,Board Component
-F1,Fuse Holder,1,36-3521-ND,Board Component
+F1,Fuse Holder,2,36-3521-ND,Board Component
 F1,Fuse,1,0225010.MXP-ND,Board Component
 FB1,FERRITE-0805NO,1,490-1053-1-ND,Board Component
 J1,LINE_SENSE_IN,1,A29938CT-ND,Board Component

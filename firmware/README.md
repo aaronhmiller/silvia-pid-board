@@ -4,7 +4,7 @@ The following describes the firmware running on the Rpi Pico that implements PID
 
 ## Zig
 
-The firmware is written in the [Zig](https://ziglang.org/) programming language, and currently tracks version `0.15.1`.
+The firmware is written in the [Zig](https://ziglang.org/) programming language, and currently tracks version `0.15.2`.
 It uses the [MicroZig project](https://microzig.tech/) to provide a HAL and build utilities for the RP2040, a project
 which I also contribute to!
 
@@ -47,6 +47,8 @@ Handles fetching temperature readings from the MAX31865 chip.
 Implements a rudimentary CLI for controlling firmware as it runs. Currently uses [RTT](https://kb.segger.com/RTT), however it is
 designed in a way to take a generic `std.Io.Reader` as its input
 source. A fun example of `comptime` usage to cut down on code repetition.
+TODO: `std.Io.Reader` will likely lead to undesireable blocking behavior if used with a non RTT interface (for instance
+UART). Should change off of this interface for a lower level interface I define.
 
 ### `HeaterIndicator`
 
@@ -56,7 +58,6 @@ Controls the heater indicator LED using PWM. Currently it only has three states:
 - Solid off: Temperature is within 2C of target
 
 Note that "solid on" still isn't at 100% duty cycle. I experimentally determined a nice value that seemed to match the brightness of the other lamps on the machine.
-
 
 ### `irq`
 
