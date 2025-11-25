@@ -60,17 +60,41 @@ const ENABLE_INTERRUPTS = false;          // Set to true when hardware is ready
 // Flag to enable USB logging only after USB is initialized
 var usb_logging_ready: bool = false;
 
-// Simplified log function - no-op for now to avoid any issues
+// Separate buffer for logging (don't share with response_buff!)
+var log_buffer: [512]u8 = undefined;
+
 pub fn log(
-    comptime level: std.log.Level,
-    comptime scope: @TypeOf(.EnumLiteral),
+    comptime level: std.log.Level, 
+    comptime scope: @TypeOf(.EnumLiteral), 
     comptime format: []const u8,
     args: anytype,
 ) void {
-    _ = level;
-    _ = scope;
-    _ = format;
-    _ = args;
+    // CRITICAL: Return immediately if not ready - don't touch ANY hardware
+    if (!usb_logging_ready) return;
+    
+    // Extra safety: Check if we can safely access time
+    const current_time = time.get_time_since_boot();
+    const seconds = current_time.to_us() / std.time.us_per_s;
+    const microseconds = current_time.to_us() % std.time.us_per_s;
+    
+    const level_prefix = comptime "[{}.{:0>6}] " ++ level.asText();
+    const prefix = comptime level_prefix ++ switch (scope) {
+        .default => ": ",
+        else => " (" ++ @tagName(scope) ++ "): ",
+    };
+
+    const full_args = .{ seconds, microseconds } ++ args;
+    
+    // If formatting fails, just return silently
+    const msg = std.fmt.bufPrint(&log_buffer, prefix ++ format, full_args) catch return;
+    
+    // Try to send to USB CDC, but ignore all errors
+    var remaining: []const u8 = msg;
+    var iterations: u32 = 0;
+    while (remaining.len > 0 and iterations < 100) : (iterations += 1) {
+        remaining = driver_cdc.write(remaining);
+        usb_dev.task(false) catch break; // If USB fails, just stop trying
+    }
 }
 
 pub fn panic(_: []const u8, _: ?*std.builtin.StackTrace, _: ?usize) noreturn {

@@ -35,13 +35,13 @@ import machine
 import time
 import json
 import ntptime
-from machine import UART, Pin, RTC
+from machine import UART, Pin, RTC, Timer
 
 # ============ CONFIGURATION ============
-WIFI_SSID = "eero353"
-WIFI_PASSWORD = "strongunicorn808"
-WIFI_START_HOUR = 0    # Start hour (24-hour format)
-WIFI_END_HOUR = 24     # End hour (24-hour format)
+WIFI_SSID = "<YOUR_SSID_HERE>"
+WIFI_PASSWORD = "<YOUR_PWD_HERE>"
+WIFI_START_HOUR = 5    # Start hour (24-hour format)
+WIFI_END_HOUR = 10     # End hour (24-hour format)
 BASE_TIMEZONE_OFFSET = -8  # PST base offset (UTC-8)
 UART_BAUDRATE = 115200
 BUILTIN_LED = 15       # Yellow user LED on XIAO ESP32C6
@@ -120,10 +120,15 @@ def blink():
 
 def beat():
     """Heartbeat - idle/power saving"""
-    led.off() # for XIAO, this means "on"
+    led.off()
     time.sleep_ms(500)
     led.on()
-    time.sleep_ms(500)
+    time.sleep_ms(5000)
+
+def pulse(timer):
+    """Pulse - show alive"""
+    led.toggle()
+
 
 # ============ TIME MANAGEMENT ============
 def sync_time():
@@ -772,17 +777,17 @@ def web_server_scheduled():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.settimeout(10.0)  # Server socket timeout
-    
+    led_timer = Timer(0)
+
     try:
         s.bind(('0.0.0.0', 80))
         s.listen(1)  # Only need 1 connection in backlog
         print(f"\n{'='*60}")
-        print(f"Web server running on http://{wlan.ifconfig()[0]}")
+        print(f"Web server (with pulse) running on http://{wlan.ifconfig()[0]}")
         print(f"Will shut down automatically at {WIFI_END_HOUR:02d}:00")
         print(f"{'='*60}\n")
-        
-        led.on()  # LED on while server is active
-        
+        led_timer.init(freq=1, mode=Timer.PERIODIC, callback=pulse)
+
         while True:
             cl = None
             try:
@@ -790,6 +795,8 @@ def web_server_scheduled():
                 try:
                     cl, addr = s.accept()
                     print(f'Connection from {addr}')
+                    # Pulse while connection alive...seems to slow response from API
+                    #pulse()
                 except OSError as e:
                     # Check if we should still be running
                     if not is_wifi_hours():
@@ -898,6 +905,7 @@ def web_server_scheduled():
     finally:
         # Cleanup
         print("Cleaning up web server...")
+        led_timer.deinit()
         try:
             s.close()
         except:
@@ -1041,7 +1049,6 @@ def main():
         # During OFF hours, heartbeat and sleep
         if not wifi_active:
             beat()
-            time.sleep(5)
 
 if __name__ == '__main__':
     try:
