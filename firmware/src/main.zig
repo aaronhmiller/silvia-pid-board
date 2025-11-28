@@ -55,7 +55,7 @@ pub var DEVICE_CONFIGURATION: usb.DeviceConfiguration = .{
 
 // Configuration flags
 const ENABLE_TEMPERATURE_SENSOR = true;  // Set to true when sensor is connected
-const ENABLE_INTERRUPTS = false;          // Set to true when hardware is ready
+const ENABLE_INTERRUPTS = true;          // Set to true when hardware is ready
 
 // Flag to enable USB logging only after USB is initialized
 var usb_logging_ready: bool = false;

@@ -186,9 +186,9 @@ fn regHandler(argv: []const []const u8) ?ErrAndUsage {
         }
         
         app_state.temperature_regulation.coffeeMode(temperature);
-        main.send_response("<<OK: Coffee mode {d:.1}°C", .{temperature});
+        main.send_response("<<OK: Coffee regulation mode {d:.1}°C", .{temperature});
         if (ENABLE_VERBOSE_RESPONSES) {
-            std.log.info("Changing setpoint to coffee mode: {d:.1}°C", .{temperature});
+            std.log.info("Changing setpoint to coffee regulation mode: {d:.1}°C", .{temperature});
         }
     } else if (std.mem.eql(u8, argv[0], "steam")) {
         const temperature: f32 = if (argv.len > 1)
@@ -205,9 +205,9 @@ fn regHandler(argv: []const []const u8) ?ErrAndUsage {
         }
         
         app_state.temperature_regulation.steamMode(temperature);
-        main.send_response("<<OK: Steam mode {d:.1}°C", .{temperature});
+        main.send_response("<<OK: Steam regulation mode {d:.1}°C", .{temperature});
         if (ENABLE_VERBOSE_RESPONSES) {
-            std.log.info("Changing setpoint to steam mode: {d:.1}°C", .{temperature});
+            std.log.info("Changing setpoint to steam regulation mode: {d:.1}°C", .{temperature});
         }
     } else {
         main.send_response("<<ERROR: Unknown subcommand '{s}'", .{argv[0]});
