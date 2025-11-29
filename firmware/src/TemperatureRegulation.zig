@@ -70,7 +70,7 @@ fn pidControlLoop(self: *TemperatureRegulation, timestamp_us: u64, current_tempe
             self.state = .thermostat_heating;
             self.error_previous = null;
             self.p_i = 0.0;
-            std.log.info("Switching control loop to thermostat mode, setpoint: {d:.1}", .{self.setpoint});
+            std.log.debug("Switching control loop to thermostat mode, setpoint: {d:.1}", .{self.setpoint});
         } else {
             const temp_error = self.setpoint - current_temperature;
 
@@ -114,18 +114,18 @@ pub fn doWork(self: *TemperatureRegulation, timestamp_us: u64, current_temperatu
         .off => {},
         .init => {
             if (current_temperature > (self.setpoint - thermostat_delta)) {
-                std.log.info("Starting control loop in PID mode, setpoint: {d:.1}", .{self.setpoint});
+                std.log.debug("Starting control loop in PID mode, setpoint: {d:.1}", .{self.setpoint});
                 self.heater_control.immediateOff();
                 self.state = .pid;
             } else {
-                std.log.info("Starting control loop in thermostat mode, setpoint: {d:.1}", .{self.setpoint});
+                std.log.debug("Starting control loop in thermostat mode, setpoint: {d:.1}", .{self.setpoint});
                 self.heater_control.duty_cycle = 100;
                 self.state = .thermostat_heating;
             }
         },
         .thermostat_heating => {
             if (current_temperature > (self.setpoint - thermostat_delta)) {
-                std.log.info("Switching control loop to PID mode, setpoint: {d:.1}", .{self.setpoint});
+                std.log.debug("Switching control loop to PID mode, setpoint: {d:.1}", .{self.setpoint});
                 self.heater_control.immediateOff();
                 self.state = .pid;
             }

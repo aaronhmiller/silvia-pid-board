@@ -86,7 +86,7 @@ pub fn log(
     const full_args = .{ seconds, microseconds } ++ args;
     
     // If formatting fails, just return silently
-    const msg = std.fmt.bufPrint(&log_buffer, prefix ++ format, full_args) catch return;
+    const msg = std.fmt.bufPrint(&log_buffer, prefix ++ format ++ "\r\n", full_args) catch return;
     
     // Try to send to USB CDC, but ignore all errors
     var remaining: []const u8 = msg;
@@ -113,7 +113,7 @@ pub fn panic(_: []const u8, _: ?*std.builtin.StackTrace, _: ?usize) noreturn {
 }
 
 pub const microzig_options = microzig.Options{
-    .log_level = .debug,
+    .log_level = .info,
     .logFn = log,
     .interrupts = if (ENABLE_INTERRUPTS) .{
         .IO_IRQ_BANK0 = .{ .c = &irq.gpio },
@@ -176,7 +176,7 @@ pub fn usb_cdc_read() []const u8 {
 var response_buff: [512]u8 = undefined;
 
 pub fn send_response(comptime fmt: []const u8, args: anytype) void {
-    const text = std.fmt.bufPrint(&response_buff, fmt ++ "\n", args) catch &.{};
+    const text = std.fmt.bufPrint(&response_buff, fmt ++ "\r\n", args) catch &.{};
     
     // Send via UART (to ESP32) - using direct register access
     const uart0_base = 0x40034000;
