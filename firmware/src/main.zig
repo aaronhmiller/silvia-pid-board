@@ -182,12 +182,16 @@ pub fn send_response(comptime fmt: []const u8, args: anytype) void {
     const uart0_base = 0x40034000;
     const uartdr = @as(*volatile u32, @ptrFromInt(uart0_base + 0x000));
     const uartfr = @as(*volatile u32, @ptrFromInt(uart0_base + 0x018));
-    const txff_mask: u32 = (1 << 5);
-    
+    const txff_mask: u32 = (1 << 5);  // TX FIFO Full
+    const txfe_mask: u32 = (1 << 7);  // TX FIFO Empty
+
     for (text) |byte| {
         while ((uartfr.* & txff_mask) != 0) {}
         uartdr.* = byte;
     }
+
+    // Wait for TX FIFO to fully drain before returning
+    while ((uartfr.* & txfe_mask) == 0) {}
     
     // Also send via USB CDC if ready
     if (usb_logging_ready) {

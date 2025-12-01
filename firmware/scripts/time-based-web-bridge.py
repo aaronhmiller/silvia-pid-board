@@ -38,10 +38,10 @@ import ntptime
 from machine import UART, Pin, RTC, Timer
 
 # ============ CONFIGURATION ============
-WIFI_SSID = "<YOUR_SSID_HERE>"
-WIFI_PASSWORD = "<YOUR_PWD_HERE>"
-WIFI_START_HOUR = 5    # Start hour (24-hour format)
-WIFI_END_HOUR = 10     # End hour (24-hour format)
+WIFI_SSID = "eero353"
+WIFI_PASSWORD = "strongunicorn808"
+WIFI_START_HOUR = 0    # Start hour (24-hour format)
+WIFI_END_HOUR = 24     # End hour (24-hour format)
 BASE_TIMEZONE_OFFSET = -8  # PST base offset (UTC-8)
 UART_BAUDRATE = 115200
 BUILTIN_LED = 15       # Yellow user LED on XIAO ESP32C6
@@ -55,7 +55,7 @@ WIFI_CONNECT_TIMEOUT = 10  # Seconds per connection attempt
 
 # ============ HARDWARE SETUP ============
 # UART (RX=GPIO17, TX=GPIO16)
-uart = UART(1, baudrate=UART_BAUDRATE, tx=16, rx=17, timeout=100)
+uart = UART(1, baudrate=UART_BAUDRATE, tx=GPIO16, rx=GPIO17, timeout=100, rxbuf=1024)
 print('UART initialized: RX=GPIO17, TX=GPIO16')
 
 led = Pin(BUILTIN_LED, Pin.OUT)
